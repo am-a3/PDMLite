@@ -16,6 +16,7 @@ DbManager::DbManager(const QString& path)
     else
     {
         qDebug() << "Database: connection ok";
+        initTables();
     }
 }
 
@@ -38,16 +39,19 @@ void DbManager::initTables(void)
     QSqlQuery query;
 
     if (!checkTableExist("parts")) {
-        query.prepare("CREATE TABLE parts (id INT NOT NULL AUTO_INCREMENT,"
-                      "proprietary_id VARCHAR NOT NULL,"
-                      "description VARCHAR,"
-                      "is_simple INT NOT NULL,"
-                      "created_by VARCHAR,"
-                      "create_datetime DATETIME,"
-                      "last_modified_by VARCHAR,"
-                      "last_modified_datetime DATETIME,"
-                      "category VARCHAR"
-                      "PRIMARY KEY (id,proprietary_id))");
+        qDebug() << "Creating parts table";
+        query.prepare("CREATE TABLE parts ("
+                      "id INTEGER PRIMARY KEY, "
+                      "proprietary_id VARCHAR(255) NOT NULL, "
+                      "description VARCHAR(255), "
+                      "is_simple INT NOT NULL, "
+                      "created_by VARCHAR(255), "
+                      "create_datetime DATETIME, "
+                      "last_modified_by VARCHAR(255), "
+                      "last_modified_datetime DATETIME, "
+                      "category VARCHAR(255), "
+                      "UNIQUE (proprietary_id)"
+                      ");");
 
         if(!query.exec())
         {
@@ -55,11 +59,56 @@ void DbManager::initTables(void)
                      << query.lastError();
         }
     }
+
+
 }
 
-bool DbManager::queryAllParts(std::vector<PartData_t> &parts)
+bool DbManager::queryAllParts(std::vector<PartData_t> &parts, qint32 limit)
 {
+    bool success = false;
+    QSqlQuery query;
+    int index;
+    PartData_t part;
 
+    query.prepare("SELECT * FROM parts LIMIT :limit");
+    query.bindValue(":limit", limit);
+
+    if(query.exec())
+    {
+        while (query.next()) {
+            index = query.record().indexOf("id");
+            part.id = query.value(index).toInt();
+            index = query.record().indexOf("proprietary_id");
+            part.proprietary_id = query.value(index).toString();
+            index = query.record().indexOf("version");
+            part.version = query.value(index).toString();
+            index = query.record().indexOf("description");
+            part.description = query.value(index).toString();
+            index = query.record().indexOf("is_simple");
+            part.is_simple = query.value(index).toBool();
+            index = query.record().indexOf("created_by");
+            part.created_by = query.value(index).toString();
+            index = query.record().indexOf("created_datetime");
+            part.created_datetime = query.value(index).toDateTime();
+            index = query.record().indexOf("last_modified_by");
+            part.last_modified_by = query.value(index).toString();
+            index = query.record().indexOf("last_modified_datetime");
+            part.last_modified_datetime = query.value(index).toDateTime();
+            index = query.record().indexOf("category");
+            part.category = query.value(index).toString();
+
+            parts.push_back(part);
+        }
+
+        success = true;
+    }
+    else
+    {
+        qDebug() << "addPart error:"
+                 << query.lastError();
+    }
+
+    return success;
 }
 
 bool DbManager::addPart(PartData_t part)
@@ -92,7 +141,7 @@ bool DbManager::addPart(PartData_t part)
     return success;
 }
 
-bool DbManager::queryPartById(QString id, PartData_t &part)
+bool DbManager::queryPartByProprietaryId(QString id, PartData_t &part)
 {
     PartData_t data;
     QSqlQuery query;
@@ -105,6 +154,8 @@ bool DbManager::queryPartById(QString id, PartData_t &part)
     {
         if (query.next()) {
             part.proprietary_id = id;
+            index = query.record().indexOf("id");
+            part.id = query.value(index).toInt();
             index = query.record().indexOf("version");
             part.version = query.value(index).toString();
             index = query.record().indexOf("description");
@@ -134,12 +185,12 @@ bool DbManager::queryPartById(QString id, PartData_t &part)
     return false;
 }
 
-bool DbManager::deletePartById(QString id)
+bool DbManager::deletePartByProprietaryId(QString id)
 {
     QSqlQuery query;
     bool success = false;
 
-    query.prepare("DELETE FROM parts WHERE id = (:id)");
+    query.prepare("DELETE FROM parts WHERE proprietary_id = (:id)");
     query.bindValue(":id", id);
 
     if(query.exec())

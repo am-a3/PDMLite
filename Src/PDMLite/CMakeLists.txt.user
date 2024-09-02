@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 12.0.2, 2024-08-29T01:34:05. -->
+<!-- Written by QtCreator 12.0.2, 2024-09-02T01:16:00. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -395,10 +395,11 @@
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">PDMLite</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">CMakeProjectManager.CMakeRunConfiguration.PDMLite</value>
     <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">PDMLite</value>
-    <value type="bool" key="ProjectExplorer.RunConfiguration.Customized">false</value>
+    <value type="bool" key="ProjectExplorer.RunConfiguration.Customized">true</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
     <value type="bool" key="RunConfiguration.UseLibrarySearchPath">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
+    <value type="bool" key="RunConfiguration.UseTerminal">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory.default">D:/Projects/PDMLite/Src/build-PDMLite-Desktop_Qt_6_6_2_MinGW_64_bit-Debug</value>
    </valuemap>
    <value type="qlonglong" key="ProjectExplorer.Target.RunConfigurationCount">1</value>

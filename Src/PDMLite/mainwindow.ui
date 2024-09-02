@@ -6,206 +6,222 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>1197</width>
+    <height>625</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTabWidget" name="tabWidget">
+   <widget class="QLineEdit" name="searchPart">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>791</width>
-      <height>541</height>
+      <x>110</x>
+      <y>20</y>
+      <width>151</width>
+      <height>26</height>
      </rect>
     </property>
-    <property name="currentIndex">
-     <number>1</number>
+   </widget>
+   <widget class="QGroupBox" name="partParamgGroupBox">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>10</y>
+      <width>371</width>
+      <height>271</height>
+     </rect>
     </property>
-    <widget class="QWidget" name="overviewTab">
-     <attribute name="title">
-      <string>Overview</string>
-     </attribute>
-     <widget class="QLineEdit" name="searchPart">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>301</width>
-        <height>26</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="searchButton">
-      <property name="geometry">
-       <rect>
-        <x>330</x>
-        <y>10</y>
-        <width>93</width>
-        <height>29</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Search</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="addPartButton">
-      <property name="geometry">
-       <rect>
-        <x>530</x>
-        <y>60</y>
-        <width>111</width>
-        <height>29</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Add new part</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="deletePartButton">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>650</x>
-        <y>60</y>
-        <width>111</width>
-        <height>29</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Delete part</string>
-      </property>
-     </widget>
-     <widget class="Line" name="line">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>40</y>
-        <width>761</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-     <widget class="QTableWidget" name="overviewTable">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>100</y>
-        <width>761</width>
-        <height>401</height>
-       </rect>
-      </property>
-     </widget>
+    <property name="title">
+     <string>Part parameters</string>
+    </property>
+    <widget class="QTableWidget" name="partParameterTable">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>60</y>
+       <width>351</width>
+       <height>201</height>
+      </rect>
+     </property>
     </widget>
-    <widget class="QWidget" name="partTab">
-     <attribute name="title">
-      <string>Part</string>
-     </attribute>
-     <widget class="QGroupBox" name="groupBox">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>761</width>
-        <height>191</height>
-       </rect>
-      </property>
-      <property name="title">
-       <string>Part parameters</string>
-      </property>
-      <widget class="QTableWidget" name="partParameterTable">
-       <property name="geometry">
-        <rect>
-         <x>15</x>
-         <y>30</y>
-         <width>551</width>
-         <height>151</height>
-        </rect>
-       </property>
-      </widget>
-     </widget>
-     <widget class="QGroupBox" name="groupBox_2">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>210</y>
-        <width>361</width>
-        <height>291</height>
-       </rect>
-      </property>
-      <property name="title">
-       <string>Bill of materials</string>
-      </property>
-      <widget class="QPushButton" name="addBomButton">
-       <property name="geometry">
-        <rect>
-         <x>260</x>
-         <y>20</y>
-         <width>93</width>
-         <height>29</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Add</string>
-       </property>
-      </widget>
-      <widget class="QTableWidget" name="bomTable">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>60</y>
-         <width>341</width>
-         <height>221</height>
-        </rect>
-       </property>
-      </widget>
-     </widget>
-     <widget class="QGroupBox" name="groupBox_3">
-      <property name="geometry">
-       <rect>
-        <x>390</x>
-        <y>210</y>
-        <width>381</width>
-        <height>291</height>
-       </rect>
-      </property>
-      <property name="title">
-       <string>Manufacturing data</string>
-      </property>
-      <widget class="QPushButton" name="addDataTable">
-       <property name="geometry">
-        <rect>
-         <x>280</x>
-         <y>20</y>
-         <width>93</width>
-         <height>29</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Add</string>
-       </property>
-      </widget>
-      <widget class="QTableView" name="dataTable">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>60</y>
-         <width>361</width>
-         <height>221</height>
-        </rect>
-       </property>
-      </widget>
-     </widget>
+    <widget class="QPushButton" name="addPartParamButton">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>20</y>
+       <width>91</width>
+       <height>29</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Add</string>
+     </property>
     </widget>
+    <widget class="QPushButton" name="deletePartParamButton">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>20</y>
+       <width>91</width>
+       <height>29</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Delete</string>
+     </property>
+    </widget>
+    <zorder>partParameterTable</zorder>
+    <zorder>deletePartParamButton</zorder>
+    <zorder>addPartParamButton</zorder>
+   </widget>
+   <widget class="Line" name="line">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>50</y>
+      <width>361</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="manufacturingDataroupBox">
+    <property name="geometry">
+     <rect>
+      <x>790</x>
+      <y>10</y>
+      <width>391</width>
+      <height>271</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Manufacturing data</string>
+    </property>
+    <widget class="QPushButton" name="addManufDataButton">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>20</y>
+       <width>93</width>
+       <height>29</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Add</string>
+     </property>
+    </widget>
+    <widget class="QTableView" name="dataTable">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>60</y>
+       <width>371</width>
+       <height>201</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="deleteManufDataButton">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>20</y>
+       <width>93</width>
+       <height>29</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Delete</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QPushButton" name="searchButton">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>20</y>
+      <width>93</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Search</string>
+    </property>
+   </widget>
+   <widget class="QTableWidget" name="overviewTable">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>70</y>
+      <width>351</width>
+      <height>481</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="bomGroupBox">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>290</y>
+      <width>771</width>
+      <height>271</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Bill of materials</string>
+    </property>
+    <widget class="QPushButton" name="addBomPartButton">
+     <property name="geometry">
+      <rect>
+       <x>560</x>
+       <y>20</y>
+       <width>93</width>
+       <height>29</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Add</string>
+     </property>
+    </widget>
+    <widget class="QTableWidget" name="bomTable">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>60</y>
+       <width>741</width>
+       <height>201</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="deleteBomPartButton">
+     <property name="geometry">
+      <rect>
+       <x>660</x>
+       <y>20</y>
+       <width>93</width>
+       <height>29</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Delete</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="Line" name="line_2">
+    <property name="geometry">
+     <rect>
+      <x>380</x>
+      <y>20</y>
+      <width>21</width>
+      <height>551</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Vertical</enum>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -213,7 +229,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>1197</width>
      <height>26</height>
     </rect>
    </property>
@@ -222,4 +238,7 @@
  </widget>
  <resources/>
  <connections/>
+ <slots>
+  <slot>cellDoubleClicked(int,int)</slot>
+ </slots>
 </ui>

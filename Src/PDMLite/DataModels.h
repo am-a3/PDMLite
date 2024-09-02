@@ -8,6 +8,7 @@ const QString PartCategoryElectrical = "Electrical";
 const QString PartCategoryMechanical = "Mechanical";
 
 typedef struct PartData_t {
+    qint32 id;
     QString proprietary_id;
     QString version;
     QString description;

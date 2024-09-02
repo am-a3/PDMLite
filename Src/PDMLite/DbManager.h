@@ -10,9 +10,9 @@ class DbManager
 public:
     DbManager(const QString& path);
     bool addPart(PartData_t part);
-    bool queryPartById(QString id, PartData_t &part);
-    bool deletePartById(QString id);
-    bool queryAllParts(std::vector<PartData_t> &parts);
+    bool queryPartByProprietaryId(QString id, PartData_t &part);
+    bool deletePartByProprietaryId(QString id);
+    bool queryAllParts(std::vector<PartData_t> &parts, qint32 limit);
 private:
     QSqlDatabase m_db;
     bool checkTableExist(const QString table_name);
