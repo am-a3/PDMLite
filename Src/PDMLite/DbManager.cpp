@@ -143,7 +143,6 @@ bool DbManager::addPart(PartData_t part)
 
 bool DbManager::queryPartByProprietaryId(QString id, PartData_t &part)
 {
-    PartData_t data;
     QSqlQuery query;
     int index;
 
@@ -192,6 +191,29 @@ bool DbManager::deletePartByProprietaryId(QString id)
 
     query.prepare("DELETE FROM parts WHERE proprietary_id = (:id)");
     query.bindValue(":id", id);
+
+    if(query.exec())
+    {
+        success = true;
+    }
+    else
+    {
+        qDebug() << "addPart error:"
+                 << query.lastError();
+    }
+
+    return success;
+}
+
+bool DbManager::updatePart(PartData_t part)
+{
+    QSqlQuery query;
+    bool success = false;
+
+    query.prepare("UPDATE parts SET description = :description, category = :category WHERE proprietary_id = :proprietary_id");
+    query.bindValue(":description", part.description);
+    query.bindValue(":category", part.category);
+    query.bindValue(":proprietary_id", part.proprietary_id);
 
     if(query.exec())
     {

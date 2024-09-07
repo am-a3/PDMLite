@@ -13,6 +13,7 @@ public:
     bool queryPartByProprietaryId(QString id, PartData_t &part);
     bool deletePartByProprietaryId(QString id);
     bool queryAllParts(std::vector<PartData_t> &parts, qint32 limit);
+    bool updatePart(PartData_t part);
 private:
     QSqlDatabase m_db;
     bool checkTableExist(const QString table_name);

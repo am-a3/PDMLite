@@ -47,6 +47,9 @@
      </property>
     </widget>
     <widget class="QPushButton" name="addPartParamButton">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>170</x>
@@ -60,6 +63,9 @@
      </property>
     </widget>
     <widget class="QPushButton" name="deletePartParamButton">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>270</x>
@@ -155,9 +161,9 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>70</y>
+      <y>110</y>
       <width>351</width>
-      <height>481</height>
+      <height>441</height>
      </rect>
     </property>
    </widget>
@@ -223,6 +229,32 @@
      <enum>Qt::Vertical</enum>
     </property>
    </widget>
+   <widget class="QPushButton" name="addPartButton">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>70</y>
+      <width>91</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Add</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="deletePartButton">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>70</y>
+      <width>91</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Delete</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -237,8 +269,59 @@
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>overviewTable</sender>
+   <signal>cellClicked(int,int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>cellClicked(int,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>195</x>
+     <y>336</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>598</x>
+     <y>312</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>addPartButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>addPartButtonClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>225</x>
+     <y>110</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>598</x>
+     <y>312</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>partParameterTable</sender>
+   <signal>cellChanged(int,int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>cellChangedParameterTable(int,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>595</x>
+     <y>196</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>598</x>
+     <y>312</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
  <slots>
-  <slot>cellDoubleClicked(int,int)</slot>
+  <slot>cellClicked(int,int)</slot>
+  <slot>addPartButtonClicked()</slot>
+  <slot>cellChangedParameterTable(int,int)</slot>
  </slots>
 </ui>

@@ -19,12 +19,17 @@ public:
     ~MainWindow();
 
 private slots:
-    void cellDoubleClicked(int row, int column);
+    void cellClicked(int row, int column);
+    void cellChangedParameterTable(int row, int column);
+    void addPartButtonClicked();
 
 private:
     Ui::MainWindow *ui;
+    PdmModel pdm_model;
+
     void ConfigureOverviewTable();
     void ConfigurePartParameterTable();
-    PdmModel pdm_model;
+    void ClearPartParameterTable();
+    bool FillPartParameterTable(PartData_t* part);
 };
 #endif // MAINWINDOW_H
