@@ -28,13 +28,6 @@ typedef enum part_parameter_table_rows {
     PART_PARAM_TABLE_ROW_COUNT
 } part_parameter_table_rows;
 
-const QHash<int, QString> intToStringHash = {
-    {PART_PARAM_TABLE_PART_NUMBER_ROW, "One"},
-    {PART_PARAM_TABLE_DESCRIPTION_ROW, "Two"},
-    {PART_PARAM_TABLE_CATEGORY_ROW, "Three"},
-    {PART_PARAM_TABLE_IS_SIMPLE_ROW, "Four"}
-};
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -53,13 +46,18 @@ MainWindow::~MainWindow()
 
 void MainWindow::ConfigureOverviewTable()
 {
-    std::vector<PartData_t>* part_overview_ptr = NULL;
-
     ui->overviewTable->setColumnCount(OVERVIEW_TABLE_COLUMN_COUNT);
     ui->overviewTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->overviewTable->setHorizontalHeaderLabels({"Part number", "Description", "Category"});
     ui->overviewTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-    part_overview_ptr = pdm_model.getPartOverview(OVERVIEW_TABLE_ENTRY_COUNT);
+    FillOverviewTable(OVERVIEW_TABLE_ENTRY_COUNT);
+}
+
+void MainWindow::FillOverviewTable(qint32 entry_number)
+{
+    std::vector<PartData_t>* part_overview_ptr = NULL;
+
+    part_overview_ptr = pdm_model.getPartOverview(entry_number);
     ui->overviewTable->setRowCount(part_overview_ptr->size());
     for (qint32 i = 0; i < part_overview_ptr->size(); i++)
     {
@@ -142,14 +140,19 @@ bool MainWindow::FillPartParameterTable(PartData_t* part)
     return true;
 }
 
-void MainWindow::cellClicked(int row, int column) // part overview table
+void MainWindow::RefreshPartView()
+{
+    FillOverviewTable(OVERVIEW_TABLE_ENTRY_COUNT);
+}
+
+void MainWindow::cellClickedOverviewTable(int row, int column)
 {
     QTableWidgetItem* part_number;
     PartData_t* part;
 
-    auto row_count = ui->overviewTable->rowCount();
+    ui->savePartButton->setEnabled(false);
 
-    pdm_model.saveCurrentPart();
+    auto row_count = ui->overviewTable->rowCount();
 
     if ((pdm_model.getPdmState() == PDM_ADD_NEW_PART) && row != (row_count - 1))
     {
@@ -184,7 +187,11 @@ void MainWindow::cellChangedParameterTable(int row, int column)
     if (column == PART_PARAM_TABLE_VALUE_COLUMN)
     {
         qDebug() << "Row: " << row << " value updated.";
+
+        ui->savePartButton->setEnabled(true);
+
         part = pdm_model.getCurrentPart();
+
         parameter = ui->partParameterTable->item(row, column);
 
         switch (row)
@@ -232,4 +239,19 @@ void MainWindow::addPartButtonClicked()
         ui->addPartButton->setEnabled(false);
         ui->deletePartButton->setEnabled(false);
     }
+}
+
+void MainWindow::savePartButtonClicked()
+{
+        pdm_model.saveCurrentPart();
+        ui->savePartButton->setEnabled(false);
+        RefreshPartView();
+
+        if (pdm_model.getPdmState() == PDM_ADD_NEW_PART)
+        {
+            pdm_model.setPdmState(PDM_EDIT_EXISTING_PART);
+
+            ui->addPartButton->setEnabled(true);
+            ui->deletePartButton->setEnabled(true);
+        }
 }

@@ -19,7 +19,7 @@ PartData_t* PdmModel::setCurrentPart(QString proprietary_id)
 {
     if (db_manager.queryPartByProprietaryId(proprietary_id, current_part.part))
     {
-        current_part.is_updated = false;
+        current_part.is_new = false;
         return &current_part.part;
     }
 
@@ -30,7 +30,7 @@ PartData_t* PdmModel::createCurrentPart()
 {
     current_part = {};
 
-    current_part.is_updated = false;
+    current_part.is_new = true;
     return &current_part.part;
 }
 
@@ -43,17 +43,17 @@ bool PdmModel::saveCurrentPart()
 {
     bool success = false;
 
-    qDebug() << "Save current part";
-    success = db_manager.updatePart(current_part.part);
-
-    if (success) current_part.is_updated = false;
+    if (current_part.is_new) {
+        success = db_manager.addPart(current_part.part);
+        if (success) current_part.is_new = false;
+    }
+    else
+    {
+        qDebug() << "Save current part";
+        success = db_manager.updatePart(current_part.part);
+    }
 
     return success;
-}
-
-void PdmModel::setCurrentPartUpdated()
-{
-    current_part.is_updated = true;
 }
 
 PdmState_t PdmModel::getPdmState()

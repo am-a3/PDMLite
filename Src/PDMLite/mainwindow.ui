@@ -28,9 +28,9 @@
     <property name="geometry">
      <rect>
       <x>410</x>
-      <y>10</y>
+      <y>40</y>
       <width>371</width>
-      <height>271</height>
+      <height>251</height>
      </rect>
     </property>
     <property name="title">
@@ -42,7 +42,7 @@
        <x>10</x>
        <y>60</y>
        <width>351</width>
-       <height>201</height>
+       <height>181</height>
       </rect>
      </property>
     </widget>
@@ -99,9 +99,9 @@
     <property name="geometry">
      <rect>
       <x>790</x>
-      <y>10</y>
+      <y>40</y>
       <width>391</width>
-      <height>271</height>
+      <height>251</height>
      </rect>
     </property>
     <property name="title">
@@ -126,7 +126,7 @@
        <x>10</x>
        <y>60</y>
        <width>371</width>
-       <height>201</height>
+       <height>181</height>
       </rect>
      </property>
     </widget>
@@ -255,6 +255,22 @@
      <string>Delete</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="savePartButton">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>10</y>
+      <width>91</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Save</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -274,7 +290,7 @@
    <sender>overviewTable</sender>
    <signal>cellClicked(int,int)</signal>
    <receiver>MainWindow</receiver>
-   <slot>cellClicked(int,int)</slot>
+   <slot>cellClickedOverviewTable(int,int)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>195</x>
@@ -318,10 +334,27 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>savePartButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>savePartButtonClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>455</x>
+     <y>50</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>598</x>
+     <y>312</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
-  <slot>cellClicked(int,int)</slot>
+  <slot>cellClickedOverviewTable(int,int)</slot>
   <slot>addPartButtonClicked()</slot>
   <slot>cellChangedParameterTable(int,int)</slot>
+  <slot>savePartButtonClicked()</slot>
  </slots>
 </ui>

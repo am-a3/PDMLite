@@ -116,9 +116,9 @@ bool DbManager::addPart(PartData_t part)
     bool success = false;
     QSqlQuery query;
     query.prepare("INSERT INTO parts (proprietary_id, version, description, is_simple,"
-                  "created_by, created_datetime, last_modified_by, last_modified_datetime,"
+                  "created_by, create_datetime, last_modified_by, last_modified_datetime,"
                   "category) VALUES (:proprietary_id, :version, :description, :is_simple,"
-                  ":created_by, current_timestamp, :last_modified_by, current_timestamp,"
+                  ":created_by, :created_datetime, :last_modified_by, :last_modified_datetime,"
                   ":category)");
     query.bindValue(":proprietary_id", part.proprietary_id);
     query.bindValue(":version", part.version);
@@ -127,6 +127,8 @@ bool DbManager::addPart(PartData_t part)
     query.bindValue(":created_by", part.created_by);
     query.bindValue(":last_modified_by", part.last_modified_by);
     query.bindValue(":category", part.category);
+    query.bindValue(":created_datetime", QDateTime::currentDateTime());
+    query.bindValue(":last_modified_datetime", QDateTime::currentDateTime());
 
     if(query.exec())
     {

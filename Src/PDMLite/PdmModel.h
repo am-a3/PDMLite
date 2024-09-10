@@ -14,10 +14,11 @@ typedef enum PdmState_t {
     PDM_EDIT_EXISTING_BOM_ENTRY
 } PdmState_t;
 
-typedef struct current_part_t {
+struct current_part_t {
+    bool is_new;
     bool is_updated;
     PartData_t part;
-} current_part_t;
+};
 
 class PdmModel
 {
@@ -29,7 +30,6 @@ public:
     PartData_t* createCurrentPart();
     PartData_t* getCurrentPart();
     bool saveCurrentPart();
-    void setCurrentPartUpdated();
 
     PdmState_t getPdmState();
     void setPdmState(PdmState_t state);
