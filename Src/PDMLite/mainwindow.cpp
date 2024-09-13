@@ -129,7 +129,7 @@ bool MainWindow::FillPartParameterTable(PartData_t* part)
     ui->partParameterTable->setItem(PART_PARAM_TABLE_PART_NUMBER_ROW, PART_PARAM_TABLE_VALUE_COLUMN, new QTableWidgetItem(part->proprietary_id));
     ui->partParameterTable->setItem(PART_PARAM_TABLE_DESCRIPTION_ROW, PART_PARAM_TABLE_VALUE_COLUMN, new QTableWidgetItem(part->description));
     ui->partParameterTable->setItem(PART_PARAM_TABLE_CATEGORY_ROW, PART_PARAM_TABLE_VALUE_COLUMN, new QTableWidgetItem(part->category));
-    ui->partParameterTable->setItem(PART_PARAM_TABLE_IS_SIMPLE_ROW, PART_PARAM_TABLE_VALUE_COLUMN, new QTableWidgetItem(part->is_simple));
+    ui->partParameterTable->setItem(PART_PARAM_TABLE_IS_SIMPLE_ROW, PART_PARAM_TABLE_VALUE_COLUMN, new QTableWidgetItem(QString::number(part->is_simple)));
     ui->partParameterTable->setItem(PART_PARAM_TABLE_CREATED_BY_ROW, PART_PARAM_TABLE_VALUE_COLUMN, new QTableWidgetItem(part->created_by));
     ui->partParameterTable->setItem(PART_PARAM_TABLE_CREATED_DATE_ROW, PART_PARAM_TABLE_VALUE_COLUMN, new QTableWidgetItem(part->created_datetime.toString()));
     ui->partParameterTable->setItem(PART_PARAM_TABLE_LAST_MODIFIED_BY_ROW, PART_PARAM_TABLE_VALUE_COLUMN, new QTableWidgetItem(part->last_modified_by));

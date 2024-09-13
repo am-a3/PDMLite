@@ -212,10 +212,16 @@ bool DbManager::updatePart(PartData_t part)
     QSqlQuery query;
     bool success = false;
 
-    query.prepare("UPDATE parts SET description = :description, category = :category WHERE proprietary_id = :proprietary_id");
+    query.prepare("UPDATE parts SET description = :description, category = :category, version = :version,"
+                  "is_simple = :is_simple, last_modified_by = :last_modified_by, last_modified_datetime = :last_modified_datetime"
+                  " WHERE proprietary_id = :proprietary_id");
     query.bindValue(":description", part.description);
     query.bindValue(":category", part.category);
     query.bindValue(":proprietary_id", part.proprietary_id);
+    query.bindValue(":version", part.version);
+    query.bindValue(":is_simple", part.is_simple);
+    query.bindValue(":last_modified_by", part.last_modified_by);
+    query.bindValue(":last_modified_datetime", QDateTime::currentDateTime());
 
     if(query.exec())
     {

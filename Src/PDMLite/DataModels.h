@@ -4,7 +4,8 @@
 #include <QString>
 #include <QDateTime>
 
-struct PartData_t {
+struct PartData_t
+{
     qint32 id = 0;
     QString proprietary_id = "";
     QString version = "";
