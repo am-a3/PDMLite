@@ -1,56 +1,52 @@
 #include "PdmModel.h"
 
 PdmModel::PdmModel()
-    :db_manager("D:\\Projects\\PDMLite\\Src\\PDMLite\\pdm_db.sqlite3")
+    :db_manager("D:\\Projects\\PDMLite\\Src\\PDMLite\\pdm_db.sqlite3"), current_part("dev")
 {
-    pdm_state = PDM_IDLE;
+    this->pdm_state = PDM_IDLE;
+    this->part_overview_entry_count = 10;
 }
 
-std::vector<PartData_t>* PdmModel::getPartOverview(qint32 part_count)
+std::vector<Part>* PdmModel::getPartOverview(qint32 part_count)
 {
-    parts_overview.clear();
+    this->parts_overview.clear();
 
-    db_manager.queryAllParts(parts_overview, part_count);
+    db_manager.queryAllParts(this->parts_overview, part_count);
 
-    return &parts_overview;
+    return &this->parts_overview;
 }
 
-PartData_t* PdmModel::setCurrentPart(QString proprietary_id)
+Part* PdmModel::setCurrentPart(QString proprietary_id)
 {
-    if (db_manager.queryPartByProprietaryId(proprietary_id, current_part.part))
-    {
-        current_part.is_new = false;
-        return &current_part.part;
-    }
-
-    return NULL;
+    this->current_part = db_manager.queryPartByProprietaryId(proprietary_id);
+    return &this->current_part;
 }
 
-PartData_t* PdmModel::createCurrentPart()
+Part* PdmModel::createCurrentPart()
 {
-    current_part = {};
+    this->current_part.clearParameters("dev");
 
-    current_part.is_new = true;
-    return &current_part.part;
+    return &this->current_part;
 }
 
-PartData_t* PdmModel::getCurrentPart()
+Part* PdmModel::getCurrentPart()
 {
-    return &current_part.part;
+    return &this->current_part;
 }
 
 bool PdmModel::saveCurrentPart()
 {
     bool success = false;
 
-    if (current_part.is_new) {
-        success = db_manager.addPart(current_part.part);
-        if (success) current_part.is_new = false;
+    if (current_part.isNew()) {
+        qDebug() << "Saving new part";
+        success = db_manager.addPart(current_part);
+        if (success) current_part.setSaved();
     }
     else
     {
         qDebug() << "Save current part";
-        success = db_manager.updatePart(current_part.part);
+        success = db_manager.updatePart(current_part);
     }
 
     return success;
@@ -58,10 +54,15 @@ bool PdmModel::saveCurrentPart()
 
 PdmState_t PdmModel::getPdmState()
 {
-    return pdm_state;
+    return this->pdm_state;
 }
 
 void PdmModel::setPdmState(PdmState_t state)
 {
-    pdm_state = state;
+    this->pdm_state = state;
+}
+
+qint32 PdmModel::getPartOverviewEntryCount()
+{
+    return this->part_overview_entry_count;
 }

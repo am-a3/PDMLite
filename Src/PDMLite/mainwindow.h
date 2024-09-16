@@ -33,7 +33,7 @@ private:
 
     void ConfigurePartParameterTable();
     void ClearPartParameterTable();
-    bool FillPartParameterTable(PartData_t* part);
+    bool FillPartParameterTable(Part* part);
 
     void RefreshPartView();
 };

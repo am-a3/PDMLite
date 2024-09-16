@@ -4,8 +4,6 @@
 #include <QString>
 #include <QDateTime>
 
-#define OVERVIEW_TABLE_ENTRY_COUNT      10
-
 #define PART_PARAM_TABLE_PARAM_COLUMN   0
 #define PART_PARAM_TABLE_VALUE_COLUMN   1
 
@@ -19,6 +17,7 @@ typedef enum overview_table_columns {
 typedef enum part_parameter_table_rows {
     PART_PARAM_TABLE_PART_NUMBER_ROW = 0,
     PART_PARAM_TABLE_DESCRIPTION_ROW,
+    PART_PARAM_TABLE_VERSION_ROW,
     PART_PARAM_TABLE_CATEGORY_ROW,
     PART_PARAM_TABLE_IS_SIMPLE_ROW,
     PART_PARAM_TABLE_CREATED_BY_ROW,
@@ -50,20 +49,20 @@ void MainWindow::ConfigureOverviewTable()
     ui->overviewTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->overviewTable->setHorizontalHeaderLabels({"Part number", "Description", "Category"});
     ui->overviewTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-    FillOverviewTable(OVERVIEW_TABLE_ENTRY_COUNT);
+    FillOverviewTable(pdm_model.getPartOverviewEntryCount());
 }
 
 void MainWindow::FillOverviewTable(qint32 entry_number)
 {
-    std::vector<PartData_t>* part_overview_ptr = NULL;
+    std::vector<Part>* part_overview_ptr = NULL;
 
     part_overview_ptr = pdm_model.getPartOverview(entry_number);
     ui->overviewTable->setRowCount(part_overview_ptr->size());
     for (qint32 i = 0; i < part_overview_ptr->size(); i++)
     {
-        ui->overviewTable->setItem(i, OVERVIEW_TABLE_PART_NUMBER_COLUMN, new QTableWidgetItem((*part_overview_ptr)[i].proprietary_id));
-        ui->overviewTable->setItem(i, OVERVIEW_TABLE_DESCRIPTION_COLUMN, new QTableWidgetItem((*part_overview_ptr)[i].description));
-        ui->overviewTable->setItem(i, OVERVIEW_TABLE_CATEGORY_COLUMN, new QTableWidgetItem((*part_overview_ptr)[i].category));
+        ui->overviewTable->setItem(i, OVERVIEW_TABLE_PART_NUMBER_COLUMN, new QTableWidgetItem((*part_overview_ptr)[i].getProprietaryId()));
+        ui->overviewTable->setItem(i, OVERVIEW_TABLE_DESCRIPTION_COLUMN, new QTableWidgetItem((*part_overview_ptr)[i].getDescription()));
+        ui->overviewTable->setItem(i, OVERVIEW_TABLE_CATEGORY_COLUMN, new QTableWidgetItem((*part_overview_ptr)[i].getCategory()));
     }
 }
 
@@ -79,61 +78,117 @@ void MainWindow::ConfigurePartParameterTable()
     item = new QTableWidgetItem("Part number");
     item->setFlags(item->flags() & ~Qt::ItemIsEditable);
     ui->partParameterTable->setItem(PART_PARAM_TABLE_PART_NUMBER_ROW, PART_PARAM_TABLE_PARAM_COLUMN, item);
+    item = new QTableWidgetItem("");
+    item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+    ui->partParameterTable->setItem(PART_PARAM_TABLE_PART_NUMBER_ROW, PART_PARAM_TABLE_VALUE_COLUMN, item);
+
     item = new QTableWidgetItem("Description");
     item->setFlags(item->flags() & ~Qt::ItemIsEditable);
     ui->partParameterTable->setItem(PART_PARAM_TABLE_DESCRIPTION_ROW, PART_PARAM_TABLE_PARAM_COLUMN, item);
+    item = new QTableWidgetItem("");
+    ui->partParameterTable->setItem(PART_PARAM_TABLE_DESCRIPTION_ROW, PART_PARAM_TABLE_VALUE_COLUMN, item);
+
+    item = new QTableWidgetItem("Version");
+    item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+    ui->partParameterTable->setItem(PART_PARAM_TABLE_VERSION_ROW, PART_PARAM_TABLE_PARAM_COLUMN, item);
+    item = new QTableWidgetItem("");
+    ui->partParameterTable->setItem(PART_PARAM_TABLE_VERSION_ROW, PART_PARAM_TABLE_VALUE_COLUMN, item);
+
     item = new QTableWidgetItem("Category");
     item->setFlags(item->flags() & ~Qt::ItemIsEditable);
     ui->partParameterTable->setItem(PART_PARAM_TABLE_CATEGORY_ROW, PART_PARAM_TABLE_PARAM_COLUMN, item);
+    item = new QTableWidgetItem("");
+    ui->partParameterTable->setItem(PART_PARAM_TABLE_CATEGORY_ROW, PART_PARAM_TABLE_VALUE_COLUMN, item);
+
     item = new QTableWidgetItem("Simple part");
     item->setFlags(item->flags() & ~Qt::ItemIsEditable);
     ui->partParameterTable->setItem(PART_PARAM_TABLE_IS_SIMPLE_ROW, PART_PARAM_TABLE_PARAM_COLUMN, item);
+    item = new QTableWidgetItem("");
+    item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+    ui->partParameterTable->setItem(PART_PARAM_TABLE_IS_SIMPLE_ROW, PART_PARAM_TABLE_VALUE_COLUMN, item);
+
     item = new QTableWidgetItem("Created by");
     item->setFlags(item->flags() & ~Qt::ItemIsEditable);
     ui->partParameterTable->setItem(PART_PARAM_TABLE_CREATED_BY_ROW, PART_PARAM_TABLE_PARAM_COLUMN, item);
+    item = new QTableWidgetItem("");
+    item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+    ui->partParameterTable->setItem(PART_PARAM_TABLE_CREATED_BY_ROW, PART_PARAM_TABLE_VALUE_COLUMN, item);
+
     item = new QTableWidgetItem("Created date");
     item->setFlags(item->flags() & ~Qt::ItemIsEditable);
     ui->partParameterTable->setItem(PART_PARAM_TABLE_CREATED_DATE_ROW, PART_PARAM_TABLE_PARAM_COLUMN, item);
+    item = new QTableWidgetItem("");
+    item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+    ui->partParameterTable->setItem(PART_PARAM_TABLE_CREATED_DATE_ROW, PART_PARAM_TABLE_VALUE_COLUMN, item);
+
     item = new QTableWidgetItem("Last modified by");
     item->setFlags(item->flags() & ~Qt::ItemIsEditable);
     ui->partParameterTable->setItem(PART_PARAM_TABLE_LAST_MODIFIED_BY_ROW, PART_PARAM_TABLE_PARAM_COLUMN, item);
+    item = new QTableWidgetItem("");
+    item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+    ui->partParameterTable->setItem(PART_PARAM_TABLE_LAST_MODIFIED_BY_ROW, PART_PARAM_TABLE_VALUE_COLUMN, item);
+
     item = new QTableWidgetItem("Last modified date");
     item->setFlags(item->flags() & ~Qt::ItemIsEditable);
     ui->partParameterTable->setItem(PART_PARAM_TABLE_LAST_MODIFIED_DATE_ROW, PART_PARAM_TABLE_PARAM_COLUMN, item);
+    item = new QTableWidgetItem("");
+    item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+    ui->partParameterTable->setItem(PART_PARAM_TABLE_LAST_MODIFIED_DATE_ROW, PART_PARAM_TABLE_VALUE_COLUMN, item);
 }
 
 void MainWindow::ClearPartParameterTable()
 {
     ui->partParameterTable->blockSignals(true);
 
-    ui->partParameterTable->setItem(PART_PARAM_TABLE_PART_NUMBER_ROW, PART_PARAM_TABLE_VALUE_COLUMN, new QTableWidgetItem(""));
-    ui->partParameterTable->setItem(PART_PARAM_TABLE_DESCRIPTION_ROW, PART_PARAM_TABLE_VALUE_COLUMN, new QTableWidgetItem(""));
-    ui->partParameterTable->setItem(PART_PARAM_TABLE_CATEGORY_ROW, PART_PARAM_TABLE_VALUE_COLUMN, new QTableWidgetItem(""));
-    ui->partParameterTable->setItem(PART_PARAM_TABLE_IS_SIMPLE_ROW, PART_PARAM_TABLE_VALUE_COLUMN, new QTableWidgetItem(""));
-    ui->partParameterTable->setItem(PART_PARAM_TABLE_CREATED_BY_ROW, PART_PARAM_TABLE_VALUE_COLUMN, new QTableWidgetItem(""));
-    ui->partParameterTable->setItem(PART_PARAM_TABLE_CREATED_DATE_ROW, PART_PARAM_TABLE_VALUE_COLUMN, new QTableWidgetItem(""));
-    ui->partParameterTable->setItem(PART_PARAM_TABLE_LAST_MODIFIED_BY_ROW, PART_PARAM_TABLE_VALUE_COLUMN, new QTableWidgetItem(""));
-    ui->partParameterTable->setItem(PART_PARAM_TABLE_LAST_MODIFIED_DATE_ROW, PART_PARAM_TABLE_VALUE_COLUMN, new QTableWidgetItem(""));
+    ui->partParameterTable->item(PART_PARAM_TABLE_PART_NUMBER_ROW, PART_PARAM_TABLE_VALUE_COLUMN)->setText("");
+    ui->partParameterTable->item(PART_PARAM_TABLE_DESCRIPTION_ROW, PART_PARAM_TABLE_VALUE_COLUMN)->setText("");
+    ui->partParameterTable->item(PART_PARAM_TABLE_CATEGORY_ROW, PART_PARAM_TABLE_VALUE_COLUMN)->setText("");
+    ui->partParameterTable->item(PART_PARAM_TABLE_IS_SIMPLE_ROW, PART_PARAM_TABLE_VALUE_COLUMN)->setText("");
+    ui->partParameterTable->item(PART_PARAM_TABLE_CREATED_BY_ROW, PART_PARAM_TABLE_VALUE_COLUMN)->setText("");
+    ui->partParameterTable->item(PART_PARAM_TABLE_CREATED_DATE_ROW, PART_PARAM_TABLE_VALUE_COLUMN)->setText("");
+    ui->partParameterTable->item(PART_PARAM_TABLE_LAST_MODIFIED_BY_ROW, PART_PARAM_TABLE_VALUE_COLUMN)->setText("");
+    ui->partParameterTable->item(PART_PARAM_TABLE_LAST_MODIFIED_DATE_ROW, PART_PARAM_TABLE_VALUE_COLUMN)->setText("");
 
     ui->partParameterTable->blockSignals(false);
 }
 
-bool MainWindow::FillPartParameterTable(PartData_t* part)
+bool MainWindow::FillPartParameterTable(Part* part)
 {
+    QTableWidgetItem* item = NULL;
+
     if (part == NULL) {
         return false;
     }
 
     ui->partParameterTable->blockSignals(true);
 
-    ui->partParameterTable->setItem(PART_PARAM_TABLE_PART_NUMBER_ROW, PART_PARAM_TABLE_VALUE_COLUMN, new QTableWidgetItem(part->proprietary_id));
-    ui->partParameterTable->setItem(PART_PARAM_TABLE_DESCRIPTION_ROW, PART_PARAM_TABLE_VALUE_COLUMN, new QTableWidgetItem(part->description));
-    ui->partParameterTable->setItem(PART_PARAM_TABLE_CATEGORY_ROW, PART_PARAM_TABLE_VALUE_COLUMN, new QTableWidgetItem(part->category));
-    ui->partParameterTable->setItem(PART_PARAM_TABLE_IS_SIMPLE_ROW, PART_PARAM_TABLE_VALUE_COLUMN, new QTableWidgetItem(QString::number(part->is_simple)));
-    ui->partParameterTable->setItem(PART_PARAM_TABLE_CREATED_BY_ROW, PART_PARAM_TABLE_VALUE_COLUMN, new QTableWidgetItem(part->created_by));
-    ui->partParameterTable->setItem(PART_PARAM_TABLE_CREATED_DATE_ROW, PART_PARAM_TABLE_VALUE_COLUMN, new QTableWidgetItem(part->created_datetime.toString()));
-    ui->partParameterTable->setItem(PART_PARAM_TABLE_LAST_MODIFIED_BY_ROW, PART_PARAM_TABLE_VALUE_COLUMN, new QTableWidgetItem(part->last_modified_by));
-    ui->partParameterTable->setItem(PART_PARAM_TABLE_LAST_MODIFIED_DATE_ROW, PART_PARAM_TABLE_VALUE_COLUMN, new QTableWidgetItem(part->last_modified_datetime.toString()));
+    ui->partParameterTable->item(PART_PARAM_TABLE_PART_NUMBER_ROW, PART_PARAM_TABLE_VALUE_COLUMN)->setText(part->getProprietaryId());
+    ui->partParameterTable->item(PART_PARAM_TABLE_DESCRIPTION_ROW, PART_PARAM_TABLE_VALUE_COLUMN)->setText(part->getDescription());
+    ui->partParameterTable->item(PART_PARAM_TABLE_CATEGORY_ROW, PART_PARAM_TABLE_VALUE_COLUMN)->setText(part->getCategory());
+
+    item = ui->partParameterTable->item(PART_PARAM_TABLE_IS_SIMPLE_ROW, PART_PARAM_TABLE_VALUE_COLUMN);
+    item->setFlags(item->flags() | Qt::ItemIsEditable);
+    item->setText(QString::number(part->getIsSimplePart()));
+    item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+
+    item = ui->partParameterTable->item(PART_PARAM_TABLE_CREATED_BY_ROW, PART_PARAM_TABLE_VALUE_COLUMN);
+    item->setFlags(item->flags() | Qt::ItemIsEditable);
+    item->setText(part->getCreatedBy());
+    item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+
+    item = ui->partParameterTable->item(PART_PARAM_TABLE_CREATED_DATE_ROW, PART_PARAM_TABLE_VALUE_COLUMN);
+    item->setFlags(item->flags() | Qt::ItemIsEditable);
+    item->setText(part->getCreatedDate().toString());
+    item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+
+    item = ui->partParameterTable->item(PART_PARAM_TABLE_LAST_MODIFIED_BY_ROW, PART_PARAM_TABLE_VALUE_COLUMN);
+    item->setFlags(item->flags() | Qt::ItemIsEditable);
+    item->setText(part->getLastModifiedBy());
+    item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+
+    item = ui->partParameterTable->item(PART_PARAM_TABLE_LAST_MODIFIED_DATE_ROW, PART_PARAM_TABLE_VALUE_COLUMN);
+    item->setText(part->getLastModifiedDate().toString());
+    item->setFlags(item->flags() & ~Qt::ItemIsEditable);
 
     ui->partParameterTable->blockSignals(false);
 
@@ -142,13 +197,18 @@ bool MainWindow::FillPartParameterTable(PartData_t* part)
 
 void MainWindow::RefreshPartView()
 {
-    FillOverviewTable(OVERVIEW_TABLE_ENTRY_COUNT);
+    FillOverviewTable(pdm_model.getPartOverviewEntryCount());
+
+    auto part = pdm_model.getCurrentPart();
+    if (!FillPartParameterTable(part)) {
+        ClearPartParameterTable();
+    }
 }
 
 void MainWindow::cellClickedOverviewTable(int row, int column)
 {
     QTableWidgetItem* part_number;
-    PartData_t* part;
+    Part* part;
 
     ui->savePartButton->setEnabled(false);
 
@@ -181,7 +241,7 @@ void MainWindow::cellClickedOverviewTable(int row, int column)
 
 void MainWindow::cellChangedParameterTable(int row, int column)
 {
-    PartData_t* part;
+    Part* part;
     QTableWidgetItem* parameter;
 
     if (column == PART_PARAM_TABLE_VALUE_COLUMN)
@@ -196,29 +256,14 @@ void MainWindow::cellChangedParameterTable(int row, int column)
 
         switch (row)
         {
-            case PART_PARAM_TABLE_PART_NUMBER_ROW:
-                part->proprietary_id = parameter->text();
-                break;
             case PART_PARAM_TABLE_DESCRIPTION_ROW:
-                part->description = parameter->text();
+            part->setDescription(parameter->text(), "dev");
                 break;
             case PART_PARAM_TABLE_CATEGORY_ROW:
-                part->category = parameter->text();
+                part->setCategory(parameter->text(), "dev");
                 break;
-            case PART_PARAM_TABLE_IS_SIMPLE_ROW:
-                part->is_simple = parameter->text().toInt();
-                break;
-            case PART_PARAM_TABLE_CREATED_BY_ROW:
-                part->created_by = parameter->text();
-                break;
-            case PART_PARAM_TABLE_CREATED_DATE_ROW:
-                part->created_datetime = QDateTime::fromString(parameter->text(), Qt::ISODate);
-                break;
-            case PART_PARAM_TABLE_LAST_MODIFIED_BY_ROW:
-                part->last_modified_by = parameter->text();
-                break;
-            case PART_PARAM_TABLE_LAST_MODIFIED_DATE_ROW:
-                part->last_modified_datetime = QDateTime::fromString(parameter->text(), Qt::ISODate);
+            case PART_PARAM_TABLE_VERSION_ROW:
+                part->setVersion(parameter->text(), "dev");
                 break;
         }
     }
@@ -231,6 +276,7 @@ void MainWindow::addPartButtonClicked()
     if (pdm_model.getPdmState() != PDM_ADD_NEW_PART)
     {
         pdm_model.setPdmState(PDM_ADD_NEW_PART);
+        pdm_model.createCurrentPart();
 
         ui->overviewTable->setRowCount(row_count + 1);
         emit ui->overviewTable->cellClicked(row_count, 0);

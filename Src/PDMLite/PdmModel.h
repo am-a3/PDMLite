@@ -14,31 +14,29 @@ typedef enum PdmState_t {
     PDM_EDIT_EXISTING_BOM_ENTRY
 } PdmState_t;
 
-struct current_part_t {
-    bool is_new;
-    bool is_updated;
-    PartData_t part;
-};
-
 class PdmModel
 {
 public:
     PdmModel();
-    std::vector<PartData_t>* getPartOverview(qint32 part_count);
+    std::vector<Part>* getPartOverview(qint32 part_count);
 
-    PartData_t* setCurrentPart(QString proprietary_id);
-    PartData_t* createCurrentPart();
-    PartData_t* getCurrentPart();
+    Part* setCurrentPart(QString proprietary_id);
+    Part* createCurrentPart();
+    Part* getCurrentPart();
     bool saveCurrentPart();
 
     PdmState_t getPdmState();
     void setPdmState(PdmState_t state);
 
+    qint32 getPartOverviewEntryCount();
+
 private:
     DbManager db_manager;
-    std::vector<PartData_t> parts_overview;
-    current_part_t current_part;
+    std::vector<Part> parts_overview;
+    Part current_part;
     PdmState_t pdm_state;
+
+    qint32 part_overview_entry_count;
 };
 
 #endif // PDMMODEL_H
