@@ -21,7 +21,10 @@ public:
 private slots:
     void cellClickedOverviewTable(int row, int column);
     void cellChangedParameterTable(int row, int column);
+
     void addPartButtonClicked();
+    void deletePartButtonClicked();
+
     void savePartButtonClicked();
 
 private:

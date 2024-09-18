@@ -4,7 +4,6 @@ PdmModel::PdmModel()
     :db_manager("D:\\Projects\\PDMLite\\Src\\PDMLite\\pdm_db.sqlite3"), current_part("dev")
 {
     this->pdm_state = PDM_IDLE;
-    this->part_overview_entry_count = 10;
 }
 
 std::vector<Part>* PdmModel::getPartOverview(qint32 part_count)
@@ -14,6 +13,11 @@ std::vector<Part>* PdmModel::getPartOverview(qint32 part_count)
     db_manager.queryAllParts(this->parts_overview, part_count);
 
     return &this->parts_overview;
+}
+
+bool PdmModel::deletePart(QString proprietary_id)
+{
+    return db_manager.deletePartByProprietaryId(proprietary_id);
 }
 
 Part* PdmModel::setCurrentPart(QString proprietary_id)
@@ -31,6 +35,7 @@ Part* PdmModel::createCurrentPart()
 
 Part* PdmModel::getCurrentPart()
 {
+    this->current_part = db_manager.queryPartByProprietaryId(this->current_part.getProprietaryId());
     return &this->current_part;
 }
 
@@ -64,5 +69,5 @@ void PdmModel::setPdmState(PdmState_t state)
 
 qint32 PdmModel::getPartOverviewEntryCount()
 {
-    return this->part_overview_entry_count;
+    return db_manager.queryPartsCount();
 }

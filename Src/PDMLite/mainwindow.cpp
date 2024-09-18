@@ -287,11 +287,26 @@ void MainWindow::addPartButtonClicked()
     }
 }
 
+void MainWindow::deletePartButtonClicked()
+{
+    QList selected_item = ui->overviewTable->selectedItems();
+
+    auto part_number = ui->overviewTable->item(selected_item[0]->row(), OVERVIEW_TABLE_PART_NUMBER_COLUMN)->text();
+
+    if (!part_number.isEmpty())
+    {
+        qDebug() << "Deleting part: " << part_number;
+
+        pdm_model.deletePart(part_number);
+    }
+
+    RefreshPartView();
+}
+
 void MainWindow::savePartButtonClicked()
 {
         pdm_model.saveCurrentPart();
         ui->savePartButton->setEnabled(false);
-        RefreshPartView();
 
         if (pdm_model.getPdmState() == PDM_ADD_NEW_PART)
         {
@@ -300,4 +315,6 @@ void MainWindow::savePartButtonClicked()
             ui->addPartButton->setEnabled(true);
             ui->deletePartButton->setEnabled(true);
         }
+
+        RefreshPartView();
 }

@@ -19,6 +19,7 @@ class PdmModel
 public:
     PdmModel();
     std::vector<Part>* getPartOverview(qint32 part_count);
+    bool deletePart(QString proprietary_id);
 
     Part* setCurrentPart(QString proprietary_id);
     Part* createCurrentPart();
@@ -35,8 +36,6 @@ private:
     std::vector<Part> parts_overview;
     Part current_part;
     PdmState_t pdm_state;
-
-    qint32 part_overview_entry_count;
 };
 
 #endif // PDMMODEL_H

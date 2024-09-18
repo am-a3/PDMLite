@@ -273,3 +273,26 @@ bool DbManager::updatePart(Part part)
 
     return success;
 }
+
+qint32 DbManager::queryPartsCount()
+{
+    QSqlQuery query;
+
+    query.prepare("SELECT COUNT(*) FROM parts");
+    if(query.exec())
+    {
+        if (query.next())
+        {
+            auto count = query.value(0).toInt();
+            return count;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    else
+    {
+        return 0;
+    }
+}

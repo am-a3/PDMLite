@@ -350,11 +350,28 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>deletePartButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>deletePartButtonClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>325</x>
+     <y>110</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>598</x>
+     <y>312</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>cellClickedOverviewTable(int,int)</slot>
   <slot>addPartButtonClicked()</slot>
   <slot>cellChangedParameterTable(int,int)</slot>
   <slot>savePartButtonClicked()</slot>
+  <slot>deletePartButtonClicked()</slot>
  </slots>
 </ui>
