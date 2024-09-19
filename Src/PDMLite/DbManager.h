@@ -2,17 +2,19 @@
 #define DBMANAGER_H
 
 #include <QSqlDatabase>
-#include "DataModels.h"
+#include "Part.h"
 #include <vector>
 
 class DbManager
 {
 public:
     DbManager(const QString& path);
-    bool addPart(PartData_t part);
-    bool queryPartById(QString id, PartData_t &part);
-    bool deletePartById(QString id);
-    bool queryAllParts(std::vector<PartData_t> &parts);
+    bool addPart(Part part);
+    Part queryPartByProprietaryId(QString id);
+    bool deletePartByProprietaryId(QString id);
+    bool queryAllParts(std::vector<Part> &parts, qint32 limit);
+    bool updatePart(Part part);
+    qint32 queryPartsCount();
 private:
     QSqlDatabase m_db;
     bool checkTableExist(const QString table_name);
