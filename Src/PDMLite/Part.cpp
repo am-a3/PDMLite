@@ -127,7 +127,7 @@ void Part::setSaved()
     this-> is_updated = false;
 }
 
-void Part::clearParameters(QString user)
+void Part::resetParameters(QString user)
 {
     this->id = 0;
     this->proprietary_id = QString::number(generatePartNumber());

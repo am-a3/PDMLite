@@ -214,6 +214,7 @@ void MainWindow::cellClickedOverviewTable(int row, int column)
 
     auto row_count = ui->overviewTable->rowCount();
 
+    //New part creation interrupted:
     if ((pdm_model.getPdmState() == PDM_ADD_NEW_PART) && row != (row_count - 1))
     {
         ui->overviewTable->removeRow(row_count - 1);
@@ -224,17 +225,25 @@ void MainWindow::cellClickedOverviewTable(int row, int column)
         pdm_model.setPdmState(PDM_IDLE);
     }
 
-    part_number = ui->overviewTable->item(row, OVERVIEW_TABLE_PART_NUMBER_COLUMN);
-
-    if (part_number != NULL) {
-        part = pdm_model.setCurrentPart(part_number->data(Qt::DisplayRole).toString());
-
-        if (!FillPartParameterTable(part)) {
-            ClearPartParameterTable();
-        }
-     }
+    if (pdm_model.getPdmState() == PDM_ADD_NEW_PART)
+    {
+        part = pdm_model.getCurrentPart();
+    }
     else
     {
+        part_number = ui->overviewTable->item(row, OVERVIEW_TABLE_PART_NUMBER_COLUMN);
+
+        if (part_number != NULL) {
+            part = pdm_model.setCurrentPart(part_number->data(Qt::DisplayRole).toString());
+        }
+        else
+        {
+            ClearPartParameterTable();
+            return;
+        }
+    }
+
+    if (!FillPartParameterTable(part)) {
         ClearPartParameterTable();
     }
 }
@@ -257,7 +266,7 @@ void MainWindow::cellChangedParameterTable(int row, int column)
         switch (row)
         {
             case PART_PARAM_TABLE_DESCRIPTION_ROW:
-            part->setDescription(parameter->text(), "dev");
+                part->setDescription(parameter->text(), "dev");
                 break;
             case PART_PARAM_TABLE_CATEGORY_ROW:
                 part->setCategory(parameter->text(), "dev");

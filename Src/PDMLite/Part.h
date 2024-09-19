@@ -49,7 +49,7 @@ public:
 
     void setSaved();
 
-    void clearParameters(QString user);
+    void resetParameters(QString user);
 
 private:
     qint32 id;

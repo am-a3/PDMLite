@@ -28,14 +28,14 @@ Part* PdmModel::setCurrentPart(QString proprietary_id)
 
 Part* PdmModel::createCurrentPart()
 {
-    this->current_part.clearParameters("dev");
+    this->current_part.resetParameters("dev");
 
     return &this->current_part;
 }
 
 Part* PdmModel::getCurrentPart()
 {
-    this->current_part = db_manager.queryPartByProprietaryId(this->current_part.getProprietaryId());
+    //this->current_part = db_manager.queryPartByProprietaryId(this->current_part.getProprietaryId()); //TODO: need to have refreshFromDb
     return &this->current_part;
 }
 
