@@ -15,6 +15,7 @@ public:
     bool queryAllParts(std::vector<Part> &parts, qint32 limit);
     bool updatePart(Part part);
     qint32 queryPartsCount();
+    bool queryPartProprietaryIdExists(QString id);
 private:
     QSqlDatabase m_db;
     bool checkTableExist(const QString table_name);

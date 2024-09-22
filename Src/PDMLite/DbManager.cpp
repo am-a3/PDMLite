@@ -296,3 +296,33 @@ qint32 DbManager::queryPartsCount()
         return 0;
     }
 }
+
+bool DbManager::queryPartProprietaryIdExists(QString id)
+{
+    QSqlQuery query;
+
+    query.prepare("SELECT COUNT(*) FROM parts WHERE WHERE proprietary_id = (:id)");
+    query.bindValue(":id", id);
+    if(query.exec())
+    {
+        if (query.next())
+        {
+            if (query.value(0).toInt() != 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+    else
+    {
+        return false;
+    }
+}

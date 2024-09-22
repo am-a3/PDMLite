@@ -36,6 +36,8 @@ private:
     std::vector<Part> parts_overview;
     Part current_part;
     PdmState_t pdm_state;
+
+    bool checkPartNumberExists(QString proprietary_id);
 };
 
 #endif // PDMMODEL_H

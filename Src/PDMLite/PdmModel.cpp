@@ -71,3 +71,8 @@ qint32 PdmModel::getPartOverviewEntryCount()
 {
     return db_manager.queryPartsCount();
 }
+
+bool PdmModel::checkPartNumberExists(QString proprietary_id)
+{
+    return db_manager.queryPartProprietaryIdExists(proprietary_id);
+}
