@@ -3,15 +3,12 @@
 
 #include "DataModels.h"
 #include "DbManager.h"
+#include "Bom.h"
 
 typedef enum PdmState_t {
     PDM_IDLE = 0,
     PDM_ADD_NEW_PART,
     PDM_EDIT_EXISTING_PART,
-    PDM_ADD_NEW_MANUFACTURING_DATA,
-    PDM_EDIT_MANUFACTURING_DATA,
-    PDM_ADD_NEW_BOM_ENTRY,
-    PDM_EDIT_EXISTING_BOM_ENTRY
 } PdmState_t;
 
 class PdmModel
@@ -26,18 +23,37 @@ public:
     Part* getCurrentPart();
     bool saveCurrentPart();
 
+    qint32 getPartOverviewEntryCount();
+
+    Bom* getCurrentPartBom();
+    BomEntry* createActivePartBomEntry();
+    BomEntry* getActivePartBomEntry();
+    QString getActivePartBomEntryPartId();
+    void setActivePartBomEntryPartId(QString value);
+
+    //State related:
     PdmState_t getPdmState();
     void setPdmState(PdmState_t state);
 
-    qint32 getPartOverviewEntryCount();
+    bool isNewBomEntryActive();
+    void setNewBomEntryActive(bool state);
 
 private:
     DbManager db_manager;
     std::vector<Part> parts_overview;
     Part current_part;
-    PdmState_t pdm_state;
+
+
+    Bom current_part_bom;
+    QString active_part_bom_entry_part_id;
+    BomEntry* active_part_bom_entry;
 
     bool checkPartNumberExists(QString proprietary_id);
+    bool saveCurrentPartBom();
+
+    //State related:
+    PdmState_t pdm_state;
+    bool new_bom_entry_active;
 };
 
 #endif // PDMMODEL_H

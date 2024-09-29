@@ -29,6 +29,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         PdmModel.h PdmModel.cpp
         PdmLiteCore.h PdmLiteCore.cpp
         Part.h Part.cpp
+        Bom.h Bom.cpp
+        BomEntry.h BomEntry.cpp
+
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET PDMLite APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

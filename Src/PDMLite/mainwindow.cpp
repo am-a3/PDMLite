@@ -27,6 +27,16 @@ typedef enum part_parameter_table_rows {
     PART_PARAM_TABLE_ROW_COUNT
 } part_parameter_table_rows;
 
+typedef enum part_bom_table_columns {
+    PART_BOM_TABLE_PART_NUMBER_COLUMN = 0,
+    PART_BOM_TABLE_QUANTITY_COLUMN,
+    PART_BOM_TABLE_CREATED_BY_COLUMN,
+    PART_BOM_TABLE_CREATED_DATE_COLUMN,
+    PART_BOM_TABLE_LAST_MODIFIED_BY_COLUMN,
+    PART_BOM_TABLE_LAST_MODIFIED_DATE_COLUMN,
+    PART_BOM_TABLE_COLUMN_COUNT
+} part_bom_table_columns;
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -36,6 +46,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     ConfigureOverviewTable();
     ConfigurePartParameterTable();
+    ConfigurePartBomTable();
 }
 
 MainWindow::~MainWindow()
@@ -202,8 +213,75 @@ void MainWindow::RefreshPartView()
     auto part = pdm_model.getCurrentPart();
     if (!FillPartParameterTable(part)) {
         ClearPartParameterTable();
+
+        return;
     }
+
+    FillPartBomTable(pdm_model.getCurrentPartBom());
 }
+
+void MainWindow::ConfigurePartBomTable()
+{
+    QTableWidgetItem* item = NULL;
+
+    ui->bomTable->setColumnCount(PART_BOM_TABLE_COLUMN_COUNT); // parameter and value
+    ui->bomTable->setRowCount(0);
+    ui->bomTable->setHorizontalHeaderLabels({"Part Number", "Quantity", "Created by",
+                                             "Created date", "Last modified by", "Last modified date"});
+    ui->bomTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+}
+
+bool MainWindow::FillPartBomTable(Bom* bom)
+{
+    QTableWidgetItem* item = NULL;
+
+    if (bom == NULL) {
+        return false;
+    }
+
+    QMap<QString, BomEntry> entries = bom->getEntries();
+    qint32 row_count = 0;
+    ui->bomTable->setRowCount(bom->getEntryCount());
+    for (auto it = entries.begin(); it != entries.end(); ++it)
+    {
+        FillPartBomRow(row_count, it.key(), it.value());
+
+        row_count++;
+    }
+
+    return true;
+}
+
+bool MainWindow::FillPartBomRow(qint32 row, QString part_id, BomEntry entry)
+{
+    QTableWidgetItem* item = NULL;
+
+    item = new QTableWidgetItem(part_id);
+    ui->bomTable->setItem(row, PART_BOM_TABLE_PART_NUMBER_COLUMN, item);
+
+    item = new QTableWidgetItem(QString::number(entry.getQuantity()));
+    ui->bomTable->setItem(row, PART_BOM_TABLE_QUANTITY_COLUMN, item);
+
+    item = new QTableWidgetItem(entry.getCreatedBy());
+    item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+    ui->bomTable->setItem(row, PART_BOM_TABLE_CREATED_BY_COLUMN, item);
+
+    item = new QTableWidgetItem(entry.getCreatedDatetime().toString());
+    item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+    ui->bomTable->setItem(row, PART_BOM_TABLE_CREATED_DATE_COLUMN, item);
+
+    item = new QTableWidgetItem(entry.getLastModifiedBy());
+    item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+    ui->bomTable->setItem(row, PART_BOM_TABLE_LAST_MODIFIED_BY_COLUMN, item);
+
+    item = new QTableWidgetItem(entry.getLastModifiedDatetime().toString());
+    item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+    ui->bomTable->setItem(row, PART_BOM_TABLE_LAST_MODIFIED_DATE_COLUMN, item);
+
+    return true;
+}
+
+//Slots:
 
 void MainWindow::cellClickedOverviewTable(int row, int column)
 {
@@ -278,6 +356,47 @@ void MainWindow::cellChangedParameterTable(int row, int column)
     }
 }
 
+void MainWindow::cellChangedPartBomTable(int row, int column)
+{
+    auto row_count = ui->bomTable->rowCount();
+    BomEntry* bom_entry(nullptr);
+    QString part_id = "";
+
+    QTableWidgetItem* changed_cell = ui->bomTable->item(row, column);
+
+    if ((pdm_model.isNewBomEntryActive()) && (row == row_count))
+    {
+        bom_entry = pdm_model.getActivePartBomEntry();
+        part_id = pdm_model.getActivePartBomEntryPartId();
+
+        if ((column == PART_BOM_TABLE_PART_NUMBER_COLUMN) && (changed_cell->data(Qt::DisplayRole).toString() != ""))
+        {
+            ui->addBomPartButton->setEnabled(true);
+            ui->deleteBomPartButton->setEnabled(true);
+        }
+    }
+    else
+    {
+        QMap<QString, BomEntry> entries = pdm_model.getCurrentPartBom()->getEntries();
+        QTableWidgetItem* cell = ui->bomTable->item(row, PART_BOM_TABLE_PART_NUMBER_COLUMN);
+        part_id = cell->data(Qt::DisplayRole).toString();
+
+        bom_entry = new BomEntry(entries.value(part_id));
+    }
+
+    switch (column)
+    {
+    case PART_BOM_TABLE_PART_NUMBER_COLUMN: //TODO: need to handle part id duplication, deny enter of same part number
+        part_id = changed_cell->data(Qt::DisplayRole).toString();
+        break;
+    case PART_BOM_TABLE_QUANTITY_COLUMN:
+        bom_entry->setQuantity(changed_cell->data(Qt::DisplayRole).toInt(), "dev");
+        break;
+    }
+
+    pdm_model.getCurrentPartBom()->saveEntry(part_id, *bom_entry);
+}
+
 void MainWindow::addPartButtonClicked()
 {
     auto row_count = ui->overviewTable->rowCount();
@@ -326,4 +445,26 @@ void MainWindow::savePartButtonClicked()
         }
 
         RefreshPartView();
+}
+
+void MainWindow::addPartBomButtonClicked()
+{
+    if (!pdm_model.isNewBomEntryActive())
+    {
+        auto row_count = ui->bomTable->rowCount();
+
+        pdm_model.setNewBomEntryActive(true);
+
+        ui->addBomPartButton->setEnabled(false);
+        ui->deleteBomPartButton->setEnabled(false);
+        ui->bomTable->setRowCount(row_count + 1);
+
+        BomEntry* active_bom_entry = pdm_model.createActivePartBomEntry();
+        FillPartBomRow(row_count, pdm_model.getActivePartBomEntryPartId(), *active_bom_entry);
+    }
+}
+
+void MainWindow::deletePartBomButtonClicked()
+{
+
 }

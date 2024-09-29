@@ -21,11 +21,15 @@ public:
 private slots:
     void cellClickedOverviewTable(int row, int column);
     void cellChangedParameterTable(int row, int column);
+    void cellChangedPartBomTable(int row, int column);
 
     void addPartButtonClicked();
     void deletePartButtonClicked();
 
     void savePartButtonClicked();
+
+    void addPartBomButtonClicked();
+    void deletePartBomButtonClicked();
 
 private:
     Ui::MainWindow *ui;
@@ -37,6 +41,10 @@ private:
     void ConfigurePartParameterTable();
     void ClearPartParameterTable();
     bool FillPartParameterTable(Part* part);
+
+    void ConfigurePartBomTable();
+    bool FillPartBomTable(Bom* bom);
+    bool FillPartBomRow(qint32 row, QString part_id, BomEntry entry);
 
     void RefreshPartView();
 };

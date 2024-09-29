@@ -18,4 +18,15 @@ struct PartData_t
     QString category = "";
 };
 
+struct BomEntry_t
+{
+    qint32 id = 0;
+    qint32 quantity = 0;
+    QString created_by = "";
+    QDateTime created_datetime = QDateTime::currentDateTime();
+    QString last_modified_by = "";
+    QDateTime last_modified_datetime = QDateTime::currentDateTime();
+    bool isUpdated = false;
+};
+
 #endif // DATAMODELS_H

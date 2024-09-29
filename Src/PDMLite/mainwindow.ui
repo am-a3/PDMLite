@@ -110,7 +110,7 @@
     <widget class="QPushButton" name="addManufDataButton">
      <property name="geometry">
       <rect>
-       <x>160</x>
+       <x>190</x>
        <y>20</y>
        <width>93</width>
        <height>29</height>
@@ -133,7 +133,7 @@
     <widget class="QPushButton" name="deleteManufDataButton">
      <property name="geometry">
       <rect>
-       <x>270</x>
+       <x>290</x>
        <y>20</y>
        <width>93</width>
        <height>29</height>
@@ -170,9 +170,9 @@
    <widget class="QGroupBox" name="bomGroupBox">
     <property name="geometry">
      <rect>
-      <x>410</x>
-      <y>290</y>
-      <width>771</width>
+      <x>790</x>
+      <y>300</y>
+      <width>391</width>
       <height>271</height>
      </rect>
     </property>
@@ -182,7 +182,7 @@
     <widget class="QPushButton" name="addBomPartButton">
      <property name="geometry">
       <rect>
-       <x>560</x>
+       <x>190</x>
        <y>20</y>
        <width>93</width>
        <height>29</height>
@@ -197,7 +197,7 @@
       <rect>
        <x>10</x>
        <y>60</y>
-       <width>741</width>
+       <width>371</width>
        <height>201</height>
       </rect>
      </property>
@@ -205,7 +205,7 @@
     <widget class="QPushButton" name="deleteBomPartButton">
      <property name="geometry">
       <rect>
-       <x>660</x>
+       <x>290</x>
        <y>20</y>
        <width>93</width>
        <height>29</height>
@@ -366,6 +366,54 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>addBomPartButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>addPartBomButtonClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1026</x>
+     <y>360</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>598</x>
+     <y>312</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>deleteBomPartButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>deletePartBomButtonClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1126</x>
+     <y>360</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>598</x>
+     <y>312</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>bomTable</sender>
+   <signal>cellChanged(int,int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>cellChangedPartBomTable(int,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>985</x>
+     <y>486</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>598</x>
+     <y>312</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>cellClickedOverviewTable(int,int)</slot>
@@ -373,5 +421,8 @@
   <slot>cellChangedParameterTable(int,int)</slot>
   <slot>savePartButtonClicked()</slot>
   <slot>deletePartButtonClicked()</slot>
+  <slot>addPartBomButtonClicked()</slot>
+  <slot>deletePartBomButtonClicked()</slot>
+  <slot>cellChangedPartBomTable(int,int)</slot>
  </slots>
 </ui>

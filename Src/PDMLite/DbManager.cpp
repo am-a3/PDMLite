@@ -1,8 +1,9 @@
-#include "DbManager.h"
 #include <QDebug>
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QSqlRecord>
+
+#include "DbManager.h"
 
 struct PartQueryData_t
 {
@@ -16,6 +17,16 @@ struct PartQueryData_t
     QString last_modified_by = "";
     QDateTime last_modified_datetime = QDateTime::currentDateTime();
     QString category = "";
+};
+
+struct BomEntryQueryData_t
+{
+    qint32 id = 0;
+    qint32 quantity = 0;
+    QString created_by = "";
+    QDateTime created_datetime = QDateTime::currentDateTime();
+    QString last_modified_by = "";
+    QDateTime last_modified_datetime = QDateTime::currentDateTime();
 };
 
 DbManager::DbManager(const QString& path)
@@ -74,7 +85,26 @@ void DbManager::initTables(void)
         }
     }
 
+    if (!checkTableExist("bom_part_assignment")) {
+        qDebug() << "Creating BOM part assignment table";
+        query.prepare("CREATE TABLE bom_part_assignment ("
+                      "id INTEGER PRIMARY KEY, "
+                      "part_id VARCHAR(255) NOT NULL, "
+                      "contains_part_id VARCHAR(255) NOT NULL, "
+                      "quantity INT NOT NULL, "
+                      "created_by VARCHAR(255), "
+                      "create_datetime DATETIME, "
+                      "last_modified_by VARCHAR(255), "
+                      "last_modified_datetime DATETIME,"
+                      "UNIQUE(part_id, contains_part_id) ON CONFLICT REPLACE"
+                      ");");
 
+        if(!query.exec())
+        {
+            qDebug() << "create parts table error:"
+                     << query.lastError();
+        }
+    }
 }
 
 bool DbManager::queryAllParts(std::vector<Part> &parts, qint32 limit)
@@ -299,9 +329,10 @@ qint32 DbManager::queryPartsCount()
 
 bool DbManager::queryPartProprietaryIdExists(QString id)
 {
+    bool success = false;
     QSqlQuery query;
 
-    query.prepare("SELECT COUNT(*) FROM parts WHERE WHERE proprietary_id = (:id)");
+    query.prepare("SELECT COUNT(*) FROM parts WHERE proprietary_id = (:id)");
     query.bindValue(":id", id);
     if(query.exec())
     {
@@ -309,20 +340,133 @@ bool DbManager::queryPartProprietaryIdExists(QString id)
         {
             if (query.value(0).toInt() != 0)
             {
-                return true;
-            }
-            else
-            {
-                return false;
+                success = true;
             }
         }
-        else
+    }
+
+    return success;
+}
+
+QMap<QString, BomEntry> DbManager::queryPartBom(QString id)
+{
+    QSqlQuery query;
+    int index;
+
+    QMap<QString, BomEntry> bom;
+    BomEntryQueryData_t entry;
+    QString part_id;
+
+    query.prepare("SELECT * FROM bom_part_assignment WHERE part_id = :id");
+    query.bindValue(":id", id);
+
+    if(query.exec())
+    {
+        while (query.next())
         {
-            return false;
+            index = query.record().indexOf("id");
+            entry.id = query.value(index).toInt();
+            index = query.record().indexOf("contains_part_id");
+            part_id = query.value(index).toString();
+            index = query.record().indexOf("quantity");
+            entry.quantity = query.value(index).toInt();
+            index = query.record().indexOf("created_by");
+            entry.created_by = query.value(index).toString();
+            index = query.record().indexOf("create_datetime");
+            entry.created_datetime = query.value(index).toDateTime();
+            index = query.record().indexOf("last_modified_by");
+            entry.last_modified_by = query.value(index).toString();
+            index = query.record().indexOf("last_modified_datetime");
+            entry.last_modified_datetime = query.value(index).toDateTime();
+
+            bom.insert(part_id, BomEntry(
+                                        entry.id,
+                                        entry.quantity,
+                                        entry.created_by,
+                                        entry.created_datetime,
+                                        entry.last_modified_by,
+                                        entry.last_modified_datetime
+                                    ));
         }
     }
     else
     {
-        return false;
+        qDebug() << "Query part BOM error:"
+                 << query.lastError();
     }
+
+    return bom;
+}
+
+bool DbManager::savePartBomEntry(QString part_id, QString contains_part_id, BomEntry& entry)
+{
+    QSqlQuery query;
+    bool success = false;
+
+    if (checkPartBomEntryExists(part_id, contains_part_id))
+    {
+        query.prepare("UPDATE bom_part_assignment SET quantity = :quantity,"
+                      "last_modified_by = :last_modified_by, last_modified_datetime = :last_modified_datetime"
+                      " WHERE part_id = :part_id AND contains_part_id = :contains_part_id");
+        query.bindValue(":part_id", part_id);
+        query.bindValue(":contains_part_id", contains_part_id);
+        query.bindValue(":quantity", entry.getQuantity());
+        query.bindValue(":last_modified_by", entry.getLastModifiedBy());
+        query.bindValue(":last_modified_datetime", entry.getLastModifiedDatetime());
+    }
+    else
+    {
+        query.prepare("INSERT INTO bom_part_assignment (part_id, contains_part_id, quantity,"
+                      "created_by, create_datetime, last_modified_by, last_modified_datetime,"
+                      "category) VALUES (:part_id, :contains_part_id, :quantity,"
+                      ":created_by, :created_datetime, :last_modified_by, :last_modified_datetime)");
+        query.bindValue(":part_id", part_id);
+        query.bindValue(":contains_part_id", contains_part_id);
+        query.bindValue(":quantity", entry.getQuantity());
+        query.bindValue(":created_by", entry.getCreatedBy());
+        query.bindValue(":created_datetime", entry.getCreatedDatetime());
+        query.bindValue(":last_modified_by", entry.getLastModifiedBy());
+        query.bindValue(":last_modified_datetime", entry.getLastModifiedDatetime());
+    }
+
+    if(query.exec())
+    {
+        if (query.next())
+        {
+            entry.setSaved();
+            success = true;
+        }
+    }
+    else
+    {
+        qDebug() << "Save part BOM error:"
+                 << query.lastError();
+    }
+
+    return success;
+}
+
+bool DbManager::checkPartBomEntryExists(QString part_number, QString contains_part_number)
+{
+    QSqlQuery query;
+    bool success = false;
+
+    query.prepare("SELECT COUNT(*) FROM bom_part_assignment WHERE part_id = :part_number AND contains_part_id = :contains_part_id LIMIT 1");
+    query.bindValue(":part_number", part_number);
+    query.bindValue(":contains_part_number", contains_part_number);
+
+    if(query.exec())
+    {
+        if (query.next())
+        {
+            success = true;
+        }
+    }
+    else
+    {
+        qDebug() << "Check part BOM entry exists error:"
+                 << query.lastError();
+    }
+
+    return success;
 }
